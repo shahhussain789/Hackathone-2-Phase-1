@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - Phase I (Web Version)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+        }
+
+        .todos-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .todo-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .todo-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .todo-item.completed {
+            border-left-color: #28a745;
+            opacity: 0.7;
+        }
+
+        .todo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .todo-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .todo-item.completed .todo-title {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .todo-id {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .todo-description {
+            color: #6c757d;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .todo-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
+        .todo-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .status-badge.complete {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.incomplete {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .todo-actions button {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <h1>📝 TODO APP</h1>
+            <p>Phase I - Web Version</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Alert Messages -->
+            <div id="alert" class="hidden"></div>
+
+            <!-- Add Todo Section -->
+            <div class="input-section">
+                <h2 style="margin-bottom: 20px; color: #333;">➕ Add New Todo</h2>
+                <div class="input-group">
+                    <label for="title">Title *</label>
+                    <input type="text" id="title" placeholder="Enter todo title (required, max 200 chars)" maxlength="200">
+                </div>
+                <div class="input-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" placeholder="Enter description (optional, max 2000 chars)" maxlength="2000"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addTodo()">Add Todo</button>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="total-count">0</h3>
+                    <p>Total Todos</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="completed-count">0</h3>
+                    <p>Completed</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="incomplete-count">0</h3>
+                    <p>Incomplete</p>
+                </div>
+            </div>
+
+            <!-- Todos List -->
+            <div>
+                <h2 style="margin-bottom: 20px; color: #333;">📋 All Todos</h2>
+                <div id="todos-list" class="todos-list">
+                    <div class="empty-state">
+                        <h3>No todos yet!</h3>
+                        <p>Add your first todo above to get started.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        if (localStorage.getItem('todoAppLoggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        // In-memory storage
+        let todos = [];
+        let nextId = 1;
+
+        // Load username
+        const username = localStorage.getItem('todoAppUsername') || 'User';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update header with username
+            document.querySelector('.header h1').textContent = `📝 TODO APP - Welcome ${username}!`;
+
+            renderTodos();
+            updateStats();
+        });
+
+        // Show alert message
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.className = type === 'success' ? 'alert alert-success' : 'alert alert-error';
+            alert.textContent = message;
+            alert.classList.remove('hidden');
+
+            setTimeout(() => {
+                alert.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Add new todo
+        function addTodo() {
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+
+            // Validation
+            if (!title) {
+                showAlert('Title cannot be empty. Please provide a title for your todo.', 'error');
+                return;
+            }
+
+            if (title.length > 200) {
+                showAlert(`Title too long (max 200 characters). Current length: ${title.length}`, 'error');
+                return;
+            }
+
+            if (description.length > 2000) {
+                showAlert(`Description too long (max 2000 characters). Current length: ${description.length}`, 'error');
+                return;
+            }
+
+            // Create todo
+            const todo = {
+                id: nextId++,
+                title: title,
+                description: description,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            todos.push(todo);
+
+            // Clear inputs
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+
+            // Update UI
+            renderTodos();
+            updateStats();
+            showAlert(`✓ Todo added successfully! ID: ${todo.id}`);
+        }
+
+        // Toggle todo completion
+        function toggleTodo(id) {
+            const todo = todos.find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                renderTodos();
+                updateStats();
+                showAlert(`✓ Todo #${id} marked as ${todo.completed ? 'complete' : 'incomplete'}!`);
+            }
+        }
+
+        // Delete todo
+        function deleteTodo(id) {
+            if (confirm('Are you sure you want to delete this todo?')) {
+                const index = todos.findIndex(t => t.id === id);
+                if (index !== -1) {
+                    todos.splice(index, 1);
+                    renderTodos();
+                    updateStats();
+                    showAlert(`✓ Todo #${id} deleted successfully!`);
+                }
+            }
+        }
+
+        // Update todo
+        function updateTodo(id) {
+            const todo = todos.find(t => t.id === id);
+            if (!todo) return;
+
+            const newTitle = prompt('Enter new title:', todo.title);
+            if (newTitle === null) return; // Cancelled
+
+            const trimmedTitle = newTitle.trim();
+            if (!trimmedTitle) {
+                showAlert('Title cannot be empty.', 'error');
+                return;
+            }
+
+            if (trimmedTitle.length > 200) {
+                showAlert(`Title too long (max 200 characters).`, 'error');
+                return;
+            }
+
+            const newDescription = prompt('Enter new description:', todo.description);
+            if (newDescription === null) return; // Cancelled
+
+            const trimmedDescription = newDescription.trim();
+            if (trimmedDescription.length > 2000) {
+                showAlert(`Description too long (max 2000 characters).`, 'error');
+                return;
+            }
+
+            todo.title = trimmedTitle;
+            todo.description = trimmedDescription;
+
+            renderTodos();
+            showAlert(`✓ Todo #${id} updated successfully!`);
+        }
+
+        // Format date
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Render todos
+        function renderTodos() {
+            const container = document.getElementById('todos-list');
+
+            if (todos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No todos yet!</h3>
+                        <p>Add your first todo above to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = todos.map(todo => `
+                <div class="todo-item ${todo.completed ? 'completed' : ''}">
+                    <div class="todo-header">
+                        <div class="todo-title">${escapeHtml(todo.title)}</div>
+                        <div class="todo-id">#${todo.id}</div>
+                    </div>
+                    ${todo.description ? `<div class="todo-description">${escapeHtml(todo.description)}</div>` : ''}
+                    <div class="todo-meta">
+                        <div class="todo-status">
+                            <span class="status-badge ${todo.completed ? 'complete' : 'incomplete'}">
+                                ${todo.completed ? '✓ Complete' : '○ Incomplete'}
+                            </span>
+                        </div>
+                        <div>${formatDate(todo.createdAt)}</div>
+                    </div>
+                    <div class="todo-actions">
+                        <button class="btn ${todo.completed ? 'btn-warning' : 'btn-success'}" onclick="toggleTodo(${todo.id})">
+                            ${todo.completed ? 'Mark Incomplete' : 'Mark Complete'}
+                        </button>
+                        <button class="btn btn-primary" onclick="updateTodo(${todo.id})">
+                            Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteTodo(${todo.id})">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = todos.length;
+            const completed = todos.filter(t => t.completed).length;
+            const incomplete = total - completed;
+
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('completed-count').textContent = completed;
+            document.getElementById('incomplete-count').textContent = incomplete;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout? All todos will be lost.')) {
+                localStorage.removeItem('todoAppLoggedIn');
+                localStorage.removeItem('todoAppUsername');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Keyboard shortcut: Enter to add todo
+        document.getElementById('title').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+    </script>
+</body>
+</html>

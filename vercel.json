@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "todo-app-phase-1",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/todo_app.html",
+      "dest": "/todo_app.html"
+    }
+  ]
+}
