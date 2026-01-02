@@ -31,6 +31,60 @@
             animation: slideIn 0.5s ease;
         }
 
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .login-container {
+                border-radius: 15px;
+            }
+
+            .login-header {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 2em;
+            }
+
+            .login-header p {
+                font-size: 1em;
+            }
+
+            .login-form {
+                padding: 30px 20px;
+            }
+
+            .icon {
+                font-size: 3em;
+            }
+
+            .btn-login {
+                padding: 14px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-header h1 {
+                font-size: 1.8em;
+            }
+
+            .login-header {
+                padding: 25px 15px;
+            }
+
+            .login-form {
+                padding: 25px 15px;
+            }
+
+            .demo-credentials {
+                font-size: 13px;
+            }
+        }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
